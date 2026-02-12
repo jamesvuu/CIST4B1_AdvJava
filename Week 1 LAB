@@ -1,0 +1,92 @@
+import java.util.Random;
+
+public class Maze {
+
+    // Recursive function to escape the maze
+    // this is the recursive function which is boolean, which will return true if you can escape and false if you cannnot.
+    public static boolean escape(int[][] maze, int row, int col, boolean[][] visited) {
+
+        // BASE CASES 
+
+        // now this is base cases to check if we are out of bounds, if we are on a wall, if we have already visited this cell, 
+        // or if we have reached the exit.
+
+        // Out of bounds
+        // if row is less than 0, you are top of maze if you are greater or equal to maze length you are bottom of maze, 
+        // if col is less than 0 you are left of maze, if you are greater or equal to maze[0].length you are right of maze.
+        // maze[0].length is the number of columns in the maze, maze.length is the number of rows in the maze.
+        // if any of these conditions are true, we are out of bounds and we cannot escape from this path, so we return false.
+        if (row < 0 || row >= maze.length || col < 0 || col >= maze[0].length)
+            return false;
+
+        // Wall or already visited
+        // so 1 in the maze means 1, which means if the spot you are in is 1, you are on a wall
+        // visited is a variabld which keeps track of which cells we have already visited
+        //  so if we are on a cell that we have already visited, we need can't go through this path
+        if (maze[row][col] == 1 || visited[row][col])
+            return false;
+
+        // Exit reached (bottom-right corner)
+        // this is the bottom right corner of maze meaning it is the exit meaning we can return true
+        if (row == maze.length - 1 && col == maze[0].length - 1)
+            return true;
+
+        // Mark this cell as visited
+        // we put this code to mark this cell as visited so that we don't have an infinite loop and get stuck
+        visited[row][col] = true;
+
+        // RECURSIVE CASES 
+        // Try moving in all 4 directions
+        //now we call escape again for each of the 4 directions, we will try to move down, up, right, and left.
+
+        // row + 1 means we are moving down, so we are increasing the row index by 1, col stays the same
+        if (escape(maze, row + 1, col, visited)) return true; 
+        // row - 1 means we are moving up, so we are decreasing the row index by 1, col stays the same
+        if (escape(maze, row - 1, col, visited)) return true; 
+        // col + 1 means we are moving right, so we are increasing the column index by 1, row stays the same
+        if (escape(maze, row, col + 1, visited)) return true; 
+        // col - 1 means we are moving left, so we are decreasing the column index by 1, row stays the same
+        if (escape(maze, row, col - 1, visited)) return true; 
+        // No path worked → backtrack
+        // visited is the same because we are passing it down to the next recursive call
+        return false;
+    }
+
+    public static void main(String[] args) {
+
+        // 0 = open path, 1 = wall
+        // example maze
+        int[][] maze = {
+            {0, 0, 1, 1, 1},
+            {1, 0, 0, 0, 1},
+            {1, 1, 0, 1, 1},
+            {1, 0, 0, 0, 0},
+            {1, 1, 1, 1, 0}
+        };
+
+        // creates the same grid as the maze 
+        // instead of 0s and 1s, it will be true or false to keep track of which cells we have visited 
+        // every value will start as false, meaning we have not visited any cells yet
+        boolean[][] visited = new boolean[maze.length][maze[0].length];
+        
+        
+        Random rand = new Random();
+
+        int startRow, startCol;
+
+        // Pick a RANDOM starting point that is not a wall
+        do {
+            startRow = rand.nextInt(maze.length);
+            startCol = rand.nextInt(maze[0].length);
+        } while (maze[startRow][startCol] == 1);
+
+        System.out.println("Starting point: (" + startRow + ", " + startCol + ")");
+
+        boolean escaped = escape(maze, startRow, startCol, visited);
+
+        if (escaped)
+            System.out.println("Escaped the maze!");
+        else
+            System.out.println("No escape path found.");
+    }
+}
