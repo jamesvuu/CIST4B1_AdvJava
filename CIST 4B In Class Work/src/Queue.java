@@ -1,0 +1,43 @@
+public class Queue<T> {
+    private Object[] data;
+    private int size; 
+    private int head;
+    private int tail;
+
+    public Queue(int size) {
+        this.size = size;
+        data = new Object[size];
+        size = 0;
+        head = 0;
+        tail = 0;
+    }
+
+    public void enqueue(T item) {
+        if (size == data.length) {
+            // grow
+        } else {
+            this.data[this.tail] = item;
+            this.tail = (this.tail + 1) % data.length;
+            size++;
+        }
+    }
+
+    public T dequeue() {
+        if (size == 0) {
+            System.err.println("Error: Attemping to remove from empty queue");
+            return null;
+        } else {
+            T retValue = (T) this.data[this.head];
+            this.data[this.head] = null;
+            this.head = (this.head + 1) % data.length;
+            this.size--;
+            return retValue;
+        }
+    }
+
+    public int peek() {
+        if (size > 0) {
+           
+        }
+    }
+}
